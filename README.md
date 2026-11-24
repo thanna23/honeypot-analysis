@@ -71,6 +71,7 @@ honeypot-analysis/
 ├── data/sample/       # small anonymized sample (IPs masked)
 ├── figures/           # generated charts
 ├── setup/install.sh   # installs Cowrie, moves SSH to 22222, redirects port 22
+├── tests/             # pytest tests for loading, classification and country lookup
 └── requirements.txt
 ```
 
@@ -91,9 +92,10 @@ Download the free [DB-IP Country Lite](https://db-ip.com/db/download/ip-to-count
 python analysis/stats.py      # connections, usernames, passwords, commands, countries
 python analysis/classify.py   # attack types and download share
 python analysis/plots.py      # writes the 4 charts to figures/
+pytest                        # runs the tests (country tests skip without the .mmdb file)
 ```
 
-Raw logs are not published. An anonymized sample will soon be  is in `data/sample/`.
+Raw logs are not published. An anonymized sample will soon be added to `data/sample/`.
 
 ## Privacy and safety
 
@@ -104,14 +106,13 @@ Raw logs are not published. An anonymized sample will soon be  is in `data/sampl
 
 - Automate log shipping with S3 + Lambda + DynamoDB for a live dashboard
 - Define the whole infrastructure in Terraform so it deploys with one command
-- Add unit tests for the classification rules
 - Run honeypots in several AWS regions and compare attack patterns
 
 ## Tech stack
 
-AWS EC2 · Ubuntu · Cowrie · iptables · Python · pandas · matplotlib · geoip2
+AWS EC2 · Ubuntu · Cowrie · iptables · Python · pandas · matplotlib · geoip2 · pytest
 
 ## Credits
-- Built with help from [Claude](https://claude.ai) (Anthropic) as a coding assistant: it helped write parts of the analysis code (classification mostly), and the setup scripts. I deployed and secured the AWS infrastructure, set up and ran the honeypot,then reviewed and ran all code myself.
+- Built with help from [Claude](https://claude.ai) (Anthropic) as a coding assistant: it helped write parts of the analysis code (classification mostly), and the setup scripts. I deployed and secured the AWS infrastructure, set up and ran the honeypot, then reviewed and ran all code myself.
 - [Cowrie](https://github.com/cowrie/cowrie) SSH honeypot
 - IP geolocation by [DB-IP](https://db-ip.com), licensed under CC BY 4.0
