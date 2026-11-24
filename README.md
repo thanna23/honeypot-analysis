@@ -2,17 +2,36 @@
 
 A real SSH honeypot running on AWS and open to the internet, plus Python code that analyzes what attackers do once they think they're in: the passwords they try, the commands they run, the malware they fetch, and where they come from.
 
-**Status:** honeypot live since 24 Nov 2026 · collecting data · the findings below will be filled in once enough data is in.
+**Status:** honeypot live since 24 Nov 2026 · collecting data · the findings below are a first snapshot and will be updated in a few weeks.
 
 ---
 
 ## Key findings
 
-Coming soon...
+> **Early snapshot: 24 Nov 2026, 11:37–14:54 UTC (about 3 hours after going live).**
+> This is a very small first sample. The honeypot keeps running and these findings will be updated in a few weeks with much more data. My own test sessions are excluded.
+
+| Metric | Value |
+| --- | --- |
+| Connections | 10 |
+| Unique attacker IPs | 6 |
+| Countries | 5 |
+| Login attempts | 0 |
+| Commands captured | 0 |
+
+- **Found within 30 minutes:** the first stranger connected at 11:37 UTC, less than 30 minutes after my first test from outside, although the server's address was never published anywhere.
+- **Scanners, not attackers (yet):** all 10 connections opened and closed without trying a single password. 9 of them never even sent an SSH version string, which is typical of port scanners mapping which machines run SSH.
+- **Where they came from:** Uzbekistan (4 connections), Argentina (2), Russia (2), the United States (1) and Ukraine (1).
+- **Automated tools:** the only client that identified itself sent `SSH-2.0-Go`, a scanner written in Go rather than a human using a normal SSH client.
+- **Still to come:** passwords, commands, malware downloads and attack types, once bots start logging in to the fake shell.
 
 ## Charts
 
-Coming soon...
+_Same early snapshot (24 Nov 2026). The password and attack-type charts will appear once bots start logging in._
+
+| | |
+| --- | --- |
+| ![Connections per hour](figures/connections_per_hour.png) | ![Top countries](figures/top_countries.png) |
 
 ---
 

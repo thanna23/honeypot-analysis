@@ -16,10 +16,11 @@ Run from the project root:
 """
 import glob
 import json
-import os
 import random
 import re
 from pathlib import Path
+
+from load import my_ips  # 127.0.0.1 + MY_IPS from .env
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "data" / "raw"
@@ -29,17 +30,6 @@ SEED = 0  # fixed, so running it twice on the same logs gives the same sample
 
 # an IPv4 address; group 1 keeps the first two parts
 IPV4 = re.compile(r"\b(\d{1,3}\.\d{1,3})\.\d{1,3}\.\d{1,3}\b")
-
-
-def my_ips():
-    """IPs to drop: localhost plus MY_IPS from the environment or .env."""
-    value = os.environ.get("MY_IPS", "")
-    env_file = ROOT / ".env"
-    if not value and env_file.exists():
-        for line in env_file.read_text().splitlines():
-            if line.startswith("MY_IPS="):
-                value = line.split("=", 1)[1]
-    return {"127.0.0.1"} | {ip.strip() for ip in value.split(",") if ip.strip()}
 
 
 def mask(value):

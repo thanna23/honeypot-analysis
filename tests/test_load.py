@@ -56,6 +56,21 @@ def test_columns_exist_even_when_no_event_has_them(tmp_path):
         assert df[col].isna().all()
 
 
+def test_drops_my_own_ips(tmp_path, monkeypatch):
+    monkeypatch.setenv("MY_IPS", "203.0.113.7")
+    write_jsonl(tmp_path / "cowrie.json", [
+        {"eventid": "cowrie.session.connect", "src_ip": "203.0.113.7",
+         "timestamp": "2026-11-24T11:00:00Z"},
+        {"eventid": "cowrie.session.connect", "src_ip": "127.0.0.1",
+         "timestamp": "2026-11-24T11:00:01Z"},
+        {"eventid": "cowrie.session.connect", "src_ip": "185.220.101.7",
+         "timestamp": "2026-11-24T11:00:02Z"},
+    ])
+    assert load_events(str(tmp_path)).src_ip.tolist() == ["185.220.101.7"]
+    # and they can still be kept on purpose
+    assert len(load_events(str(tmp_path), exclude_mine=False)) == 3
+
+
 def test_missing_fields_become_nan(tmp_path):
     # "password" only exists on login events
     write_jsonl(tmp_path / "cowrie.json", [

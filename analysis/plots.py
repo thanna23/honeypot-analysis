@@ -11,6 +11,7 @@ import matplotlib
 # which WSL usually can't do. Must be set before importing pyplot.
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 
 from classify import classify_sessions
 from geo import country
@@ -47,6 +48,7 @@ def bar(series, title, xlabel, name):
     # barh draws the first item at the bottom, so sort smallest-first
     # to put the biggest bar on top
     series.sort_values().plot.barh(ax=ax, color="#4C72B0")
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))  # counts: no 0.5 ticks
     ax.set_title(title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel("")  # the labels on the bars already say what they are
@@ -64,6 +66,7 @@ per_hour = conns.set_index("timestamp").resample("1h").size()
 fig, ax = plt.subplots(figsize=(10, 4))
 ax.plot(per_hour.index, per_hour.values, color="#4C72B0", marker="o", markersize=3)
 ax.set_ylim(bottom=0)    # start at 0 so small changes don't look huge
+ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 fig.autofmt_xdate()      # tilt the date labels so they don't overlap
 ax.set_title("Connections per hour")
 ax.set_xlabel("Time (UTC)")  # Cowrie logs in UTC
