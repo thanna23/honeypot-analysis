@@ -2,35 +2,17 @@
 
 A real SSH honeypot running on AWS and open to the internet, plus Python code that analyzes what attackers do once they think they're in: the passwords they try, the commands they run, the malware they fetch, and where they come from.
 
-> **Status:** honeypot live since 24 Nov 2026 · collecting data · the findings below will be filled in once enough data is in.
+**Status:** honeypot live since 24 Nov 2026 · collecting data · the findings below will be filled in once enough data is in.
 
 ---
 
 ## Key findings
 
-_Collected over [N] days ([start date] – [end date])._
-
-| Metric | Value |
-| --- | --- |
-| Connections | [X] |
-| Unique attacker IPs | [X] |
-| Countries | [X] |
-| Successful fake logins | [X] |
-| Sessions that ran commands | [X] |
-| Sessions that tried to download a file | [X] ([X]%) |
-
-- **Most-tried password:** `[X]` ([X]% of all login attempts)
-- **Most-targeted usernames:** `[X]`, `[X]`, `[X]`
-- **Busiest hour (UTC):** [X]
-- **Top country:** [X] ([X]% of connections)
-- **Most common attack type:** [X] ([X]% of sessions that ran commands)
+Coming soon...
 
 ## Charts
 
-| | |
-| --- | --- |
-| ![Connections per hour](figures/connections_per_hour.png) | ![Top passwords](figures/top_passwords.png) |
-| ![Top countries](figures/top_countries.png) | ![Attack types](figures/attack_types.png) |
+Coming soon...
 
 ---
 
@@ -111,11 +93,10 @@ python analysis/classify.py   # attack types and download share
 python analysis/plots.py      # writes the 4 charts to figures/
 ```
 
-Raw logs are not published. An anonymized sample is in `data/sample/`.
+Raw logs are not published. An anonymized sample will soon be  is in `data/sample/`.
 
 ## Privacy and safety
 
-- Only aggregated statistics and a small sample with **masked IP addresses** (e.g. `185.220.x.x`) are published.
 - No credentials, keys or server addresses are stored in this repository.
 - The honeypot only emulates a shell: attackers can't run real commands or use it to attack other machines.
 
@@ -124,7 +105,6 @@ Raw logs are not published. An anonymized sample is in `data/sample/`.
 - Automate log shipping with S3 + Lambda + DynamoDB for a live dashboard
 - Define the whole infrastructure in Terraform so it deploys with one command
 - Add unit tests for the classification rules
-- Group attackers by SSH client fingerprint (HASSH) to identify botnets and tools
 - Run honeypots in several AWS regions and compare attack patterns
 
 ## Tech stack
@@ -132,6 +112,6 @@ Raw logs are not published. An anonymized sample is in `data/sample/`.
 AWS EC2 · Ubuntu · Cowrie · iptables · Python · pandas · matplotlib · geoip2
 
 ## Credits
-
+- Built with help from [Claude](https://claude.ai) (Anthropic) as a coding assistant: it helped write parts of the analysis code (classification mostly), and the setup scripts. I deployed and secured the AWS infrastructure, set up and ran the honeypot,then reviewed and ran all code myself.
 - [Cowrie](https://github.com/cowrie/cowrie) SSH honeypot
 - IP geolocation by [DB-IP](https://db-ip.com), licensed under CC BY 4.0
