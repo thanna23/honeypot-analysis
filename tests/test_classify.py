@@ -98,3 +98,10 @@ def test_no_commands_at_all():
     df = make_events()
     df = df[df.eventid != "cowrie.command.input"]
     assert classify_sessions(df).empty
+
+
+def test_no_input_column_at_all():
+    # logs where nobody ever logged in have no "input" field anywhere
+    df = make_events()
+    df = df[df.eventid != "cowrie.command.input"].drop(columns="input")
+    assert classify_sessions(df).empty

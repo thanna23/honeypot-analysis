@@ -67,11 +67,14 @@ honeypot-analysis/
 │   ├── geo.py         # IP → country lookup
 │   ├── stats.py       # summary statistics
 │   ├── classify.py    # label sessions by attack type
-│   └── plots.py       # charts saved to figures/
+│   ├── plots.py       # charts saved to figures/
+│   └── make_sample.py # builds the anonymized sample from the raw logs
 ├── data/sample/       # small anonymized sample (IPs masked)
 ├── figures/           # generated charts
-├── setup/install.sh   # installs Cowrie, moves SSH to 22222, redirects port 22
-├── tests/             # pytest tests for loading, classification and country lookup
+├── setup/
+│   ├── install.sh     # installs Cowrie, moves SSH to 22222, redirects port 22
+│   └── fetch_logs.sh  # downloads the latest logs from the honeypot
+├── tests/             # pytest tests for loading, classification, sampling and country lookup
 └── requirements.txt
 ```
 
@@ -86,7 +89,7 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Download the free [DB-IP Country Lite](https://db-ip.com/db/download/ip-to-country-lite) database and unzip it into the project root as `dbip-country-lite.mmdb`. Put your Cowrie logs (`cowrie.json*`) in `data/raw/`, then run from the project root:
+Download the free [DB-IP Country Lite](https://db-ip.com/db/download/ip-to-country-lite) database and unzip it into the project root as `dbip-country-lite.mmdb`, then run from the project root. The scripts use your own Cowrie logs if you put them (`cowrie.json*`) in `data/raw/`, and the anonymized sample in `data/sample/` otherwise:
 
 ```bash
 python analysis/stats.py      # connections, usernames, passwords, commands, countries
@@ -95,10 +98,11 @@ python analysis/plots.py      # writes the 4 charts to figures/
 pytest                        # runs the tests (country tests skip without the .mmdb file)
 ```
 
-Raw logs are not published. An anonymized sample will soon be added to `data/sample/`.
+Raw logs are not published. `data/sample/` holds whole attacker sessions with every IP address masked (`185.220.x.x`), so country lookups in the sample show as "Unknown". Rebuild it from your raw logs with `python analysis/make_sample.py`.
 
 ## Privacy and safety
 
+- Only aggregated statistics and a small sample with **masked IP addresses** are published. My own test sessions are removed from the sample entirely.
 - No credentials, keys or server addresses are stored in this repository.
 - The honeypot only emulates a shell: attackers can't run real commands or use it to attack other machines.
 

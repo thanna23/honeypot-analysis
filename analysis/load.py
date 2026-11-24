@@ -1,21 +1,40 @@
 """Load all Cowrie JSON logs into one pandas DataFrame."""
 import glob, json
+from pathlib import Path
+
 import pandas as pd
 
-# TODO (Part 6): let people who clone the repo run the code without raw logs.
-#   1. Write a script that makes data/sample/sample.json: ~500 random events
-#      with masked IPs (e.g. 185.220.x.x), from the guide's Part 6 step 3.
-#   2. Here, fall back to data/sample/ when data/raw/ has no cowrie.json* files,
-#      and print which folder is being used. My own runs keep using data/raw/.
+ROOT = Path(__file__).resolve().parent.parent
+RAW = ROOT / "data" / "raw"        # real logs, on my laptop only (not on GitHub)
+SAMPLE = ROOT / "data" / "sample"  # small anonymized sample, published on GitHub
+
+# fields the analysis scripts use; always present after loading
+COLUMNS = ["eventid", "session", "src_ip", "timestamp",
+           "username", "password", "input", "url", "shasum"]
 
 
-def load_events(path="data/raw"):
+def default_path():
+    """Use the real logs if they're here, otherwise the published sample.
+
+    So my own runs use data/raw/, and anyone who clones the repo can still
+    run everything on data/sample/.
+    """
+    if glob.glob(str(RAW / "cowrie.json*")):
+        return RAW
+    print(f"No logs in {RAW}, using the anonymized sample in {SAMPLE}")
+    return SAMPLE
+
+
+def load_events(path=None):
     """Read every Cowrie log file in `path` and return one row per event.
 
     Cowrie writes the current day to cowrie.json and older days to rotated
     files (cowrie.json.YYYY-MM-DD), so the glob picks up all of them.
-    The path is relative, so run the scripts from the project root.
+    Without a path, uses data/raw/ or falls back to data/sample/.
     """
+    if path is None:
+        path = default_path()
+
     rows = []
     for f in glob.glob(f"{path}/cowrie.json*"):
         with open(f) as fh:
@@ -25,6 +44,13 @@ def load_events(path="data/raw"):
     # events have different fields depending on their type; pandas fills
     # the missing ones with NaN (e.g. "password" only exists on login events)
     df = pd.DataFrame(rows)
+
+    # a column only exists if at least one event has that field, so on a quiet
+    # day (e.g. bots only connected, nobody logged in) "username" or "input"
+    # would be missing and the other scripts would crash; add them as empty
+    for col in COLUMNS:
+        if col not in df.columns:
+            df[col] = pd.NA
 
     # turn the timestamp text into real datetimes so we can group by hour
     df["timestamp"] = pd.to_datetime(df["timestamp"])

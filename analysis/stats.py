@@ -19,9 +19,12 @@ print(logins.password.value_counts().head(10))
 # most-typed commands
 # clean commands: trim spaces, drop empty ones, cut long junk to 60 chars
 # (otherwise one very long line pushes the whole table off the screen)
-cmd_text = cmds.input.str.strip()
-cmd_text = cmd_text[cmd_text != ""].str.slice(0, 60)
-print(cmd_text.value_counts().head(15))
+if cmds.empty:
+    print("No commands yet (no attacker has logged in)")
+else:
+    cmd_text = cmds.input.str.strip()
+    cmd_text = cmd_text[cmd_text != ""].str.slice(0, 60)
+    print(cmd_text.value_counts().head(15))
 
 # where the connections come from
 conns = conns.assign(country=conns.src_ip.map(country))

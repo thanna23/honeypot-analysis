@@ -38,6 +38,12 @@ def classify_sessions(df):
     session, src_ip, n_commands, attack_type, downloaded."""
     cmds = df[df.eventid == "cowrie.command.input"]
 
+    # nobody ran a command (e.g. no bot managed to log in yet): pandas then
+    # has no "input" column at all, so return an empty table instead of crashing
+    if cmds.empty or "input" not in df.columns:
+        return pd.DataFrame(columns=["session", "src_ip", "n_commands",
+                                     "attack_type", "downloaded"])
+
     # group the command events by session: one row per session,
     # with all its commands collected into a list
     sessions = cmds.groupby("session").agg(

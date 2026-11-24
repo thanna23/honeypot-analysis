@@ -37,6 +37,13 @@ def bar(series, title, xlabel, name):
     Horizontal bars leave room for long labels like passwords.
     """
     fig, ax = plt.subplots(figsize=(8, 5))
+    if series.empty:
+        # e.g. no attacker logged in yet, so no commands to classify
+        ax.text(0.5, 0.5, "No data yet", ha="center", va="center", fontsize=14)
+        ax.set_axis_off()
+        ax.set_title(title)
+        save(fig, name)
+        return
     # barh draws the first item at the bottom, so sort smallest-first
     # to put the biggest bar on top
     series.sort_values().plot.barh(ax=ax, color="#4C72B0")

@@ -43,6 +43,19 @@ def test_timestamps_are_datetimes(tmp_path):
     assert df.timestamp.iloc[0].hour == 11
 
 
+def test_columns_exist_even_when_no_event_has_them(tmp_path):
+    # bots only connected: no username, password or input anywhere
+    write_jsonl(tmp_path / "cowrie.json", [
+        {"eventid": "cowrie.session.connect", "session": "a", "src_ip": "1.1.1.1",
+         "timestamp": "2026-11-24T11:00:00Z"},
+    ])
+    df = load_events(str(tmp_path))
+
+    for col in ["username", "password", "input", "url", "shasum"]:
+        assert col in df.columns
+        assert df[col].isna().all()
+
+
 def test_missing_fields_become_nan(tmp_path):
     # "password" only exists on login events
     write_jsonl(tmp_path / "cowrie.json", [
