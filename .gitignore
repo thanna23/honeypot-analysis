@@ -1,0 +1,7 @@
+data/raw/
+logs.tgz
+*.pem
+*.mmdb
+.venv/
+.env
+__pycache__/
